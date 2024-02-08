@@ -94,4 +94,4 @@ with open(output_path_lang, 'w') as f_lang:
 
 print('saving', output_path_country)
 with open(output_path_country, 'w') as f_country:
-    f_country.write(json.dumps(counter_lang))
+    f_country.write(json.dumps(counter_country))
