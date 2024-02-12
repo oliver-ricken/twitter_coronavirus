@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
+import matplotlib.pyplot as plt
+import numpy as np
+
 # command line args
 import argparse
 parser = argparse.ArgumentParser()
@@ -22,7 +27,39 @@ if args.percent:
     for k in counts[args.key]:
         counts[args.key][k] /= counts['_all'][k]
 
-# print the count values
+counter = 0
+key_list = []
+val_list = []
+
 items = sorted(counts[args.key].items(), key=lambda item: (item[1],item[0]), reverse=True)
+
 for k,v in items:
-    print(k,':',v)
+    if counter <= 9:
+        key_list += [k]
+        val_list += [int(v)]
+    counter += 1
+
+key_list_flip = list(reversed(key_list))
+val_list_flip = list(reversed(val_list))
+
+n = len(key_list)
+indices = np.arange(n)
+plot1 = plt.bar(indices, val_list_flip)
+plt.xticks(indices, key_list_flip)
+
+if "country" in str(args.input_path):
+    xaxis = "Country"
+else:
+    xaxis = "Language"
+
+plt.ylabel('Number of Tweets')
+plt.xlabel(xaxis)
+
+if "#코로나바이러스" in str(args.key):
+    plt.title('Top 10 Korean "Coronavirus" Hashtag Tweets by ' + xaxis)
+else:
+    plt.title('Top 10 ' + args.key + ' Tweets by ' + xaxis)
+
+# Save the graph as a PNG file
+plt.tight_layout()
+plt.savefig(f"./{args.input_path}_hangulgraph.png")
