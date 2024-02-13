@@ -51,7 +51,7 @@ Now that we've introduced the MapReduce model, let's cover each of the steps in 
 
 ## Method
 
-**Task 1: Map**
+**Mapping**
 
 The `map.py` file processes the zip files for each day and tracks the usage of the loaded hashtags on both a language and country level. The hashtags we track are contained within the `# load keywords` section of the file, and displayed below:
 
@@ -77,72 +77,41 @@ hashtags = [
 ]
 ```
 
-Running `map.py` will output two files, one that ends in `.lang` for the language dictionary, and one that ends in `.country` for the country dictionary. Essentially, each file either contains the number of tweets sent from each country (in the `.country` file), or the number of tweets written in each language (in the `.lang` file). The keys of the dictionary in each file are simply the hashtags that we want to track, and the value of those keys are the number of sent tweets that contain their respective hashtag.
+Running `map.py` will output two files, one that ends in `.lang` for the language dictionary, and one that ends in `.country` for the country dictionary. Essentially, each file either contains the number of tweets sent from each country (in the `.country` file), or the number of tweets written in each language (in the `.lang` file). The keys of the dictionary in each file are simply the hashtags that we want to track, and the value of those keys are the number of sent tweets that contain the respective hashtag.
 
-## Programming Tasks
+**Running the Mapper**
 
-Complete the following tasks:
+`run_maps.sh` is a shell script that loops over each file in the dataset and runs the `map.py` command on that file. Each call to `map.py` can take up to a day to finish, so I used the `nohup` command to ensure that the program continues to run after disconnecting, and the `&` operator to ensure that all `map.py` commands run in parallel. First, ensure that you have execute permissions:
 
-**Task 0: Create the mapper**
-
-Modify the `map.py` file so that it tracks the usage of the hashtags on both a language and country level.
-This will require creating a variable `counter_country` similar to the variable `counter_lang`, 
-and modifying this variable in the `#search hashtags` section of the code appropriately.
-The output of running `map.py` should be two files now, one that ends in `.lang` for the language dictionary (same as before),
-and one that ends in `.country` for the country dictionary.
-
-> **HINT:**
-> Most tweets contain a `place` key,
-> which contains a dictionary with the `country_code` key.
-> This is how you should lookup the country that a tweet was sent from.
-> Some tweets, however, do not have a `country_code` key.
-> This can happen, for example, if the tweet was sent from international waters or the [international space station](https://web.archive.org/web/20220124224726/https://unistellaroptics.com/10-years-ago-today-the-first-tweet-was-sent-directly-from-space/).
-> Your code will have to be generic enough to handle edge cases similar to this without failing.
-
-**Task 1: Run the mapper**
-
-> **HINT:**
-> You should thoroughly test your `map.py` file on a single day's worth of tweets and verify that you are getting reasonable results before moving on to this step.
-
-Create a shell script called `run_maps.sh`.
-This file will loop over each file in the dataset and run the `map.py` command on that file.
-Each call to `map.py` can take up to a day to finish, so you should use the `nohup` command to ensure the program continues to run after you disconnect and the `&` operator to ensure that all `map.py` commands run in parallel.
-
-> **HINT:**
-> Use the glob `*` to select only the tweets from 2020 and not all tweets.
-
-**Task 2: Reduce**
-
-> **HINT:**
-> You should manually inspect the output of your mapper code to ensure that it is reasonable and that you did not run into any error messages.
-> If you have errors above that you don't deal with,
-> then everything else below will be incorrect.
-
-After your modified `map.py` has run on all the files,
-you should have a large number of files in your `outputs` folder.
-Use the `reduce.py` file to combine all of the `.lang` files into a single file,
-and all of the `.country` files into a different file.
-
-**Task 3: Visualize**
-
-Recall that you can visualize your output files with the command
 ```
-$ ./src/visualize.py --input_path=PATH --key=HASHTAG
+chmod u+x run_maps.sh
 ```
-Currently, this prints the top keys to stdout.
 
-Modify the `visualize.py` file so that it generates a bar graph of the results and stores the bar graph as a png file.
-The horizontal axis of the graph should be the keys of the input file,
-and the vertical axis of the graph should be the values of the input file.
-The final results should be sorted from low to high, and you only need to include the top 10 keys.
+Then, go ahead and run the script:
 
-> **HINT:**
-> We are not covering how to create images from python code in this class.
-> I recommend you use the matplotlib library,
-> and you can find some samples to base your code off of [in the documentation here](https://matplotlib.org/3.1.1/tutorials/introductory/sample_plots.html).
+```
+nohup ./run_maps.sh &
+```
 
-Then, run the `visualize.py` file with the `--input_path` equal to both the country and lang files created in the reduce phase, and the `--key` set to `#coronavirus` and `#코로나바이러스`.
-This should generate four plots in total.
+**Reducing the Outputs**
+
+After `map.py` has run on all the files, a large number of files will be contained in the `outputs` folder. `reduce.py` combines all of the `.lang` files into a single file, `reduced.lang`, and all of the `.country` files into a different file, `reduced.country`. We make two calls to `reduce.py`, one for the `.lang` files and the other for the `.country` files. Here's an example command to run `reduce.py` for the `.lang` files, using the glob operator:
+
+```
+./src/reduce.py --input_path=outputs/*.lang --output_path=reduced.lang
+```
+
+A similar command should be used to input all the `.country` files into `reduce.py` to generate `reduced.country`.
+
+**Visualizing the Outputs**
+
+The `visualize.py` file generates a bar graph of the results and stores the bar graph as a png file. The horizontal axis of the graph contains the keys of the input file, and the vertical axis of the graph contains the values of the input file.
+
+First, I ran `visualize.py` with the `--input_path` equal to the country file created in the reduce phase, and the `--key` set to `#coronavirus`. This gave me an idea of which countries sent the most tweets that in some way mentioned the coronavirus. Of course, the results are slightly skewed due to differences in population between the countries, but the result is still somewhat interesting.
+
+<img src=reduced.country_#coronavirus_graph.png width=100% />
+
+
 
 **Task 4: Alternative Reduce**
 
