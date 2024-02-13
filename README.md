@@ -109,9 +109,7 @@ The `visualize.py` file generates a bar graph of the results and stores the bar 
 
 First, I ran `visualize.py` with the `--input_path` equal to the country file created in the reduce phase, and the `--key` set to `#coronavirus`. This gave me an idea of which countries sent the most tweets that in some way mentioned the coronavirus. Of course, the results are slightly skewed due to differences in population between the countries, but the result is still somewhat interesting.
 
-<img src=reduced.country_#coronavirus_graph.png width=100% />
-
-
+<img src=reduced.country_%23coronavirus_graph.png width=100% />
 
 **Task 4: Alternative Reduce**
 
