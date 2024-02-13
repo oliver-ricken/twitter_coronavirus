@@ -1,4 +1,4 @@
-# Tracking Coronavirus on Twitter in 2020
+# Tracking the Coronavirus on Twitter in 2020
 
 In this project, I scanned through all geotagged tweets sent in 2020 to monitor for the spread of the coronavirus on social media. This project allowed me to:
 
