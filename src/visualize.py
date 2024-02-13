@@ -56,10 +56,10 @@ plt.ylabel('Number of Tweets')
 plt.xlabel(xaxis)
 
 if "#코로나바이러스" in str(args.key):
-    plt.title('Top 10 Korean "Coronavirus" Hashtag Tweets by ' + xaxis)
+    pass
 else:
     plt.title('Top 10 ' + args.key + ' Tweets by ' + xaxis)
 
 # Save the graph as a PNG file
 plt.tight_layout()
-plt.savefig(f"./{args.input_path}_hangulgraph.png")
+plt.savefig(f"./{args.input_path}_korean_graph.png")
