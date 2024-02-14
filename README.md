@@ -111,62 +111,52 @@ First, I ran `visualize.py` with the `--input_path` equal to the country file cr
 
 <img src=reduced.country_%23coronavirus_graph.png width=100% />
 
-**Task 4: Alternative Reduce**
+We can see here that the vast majority of tweets posted in 2020 that contained `#coronavirus` were sent from the United States. India and Great Britian were the second and third largest, respectively, but had less than half as many tweets. I then created a new graph using `visualize.py` with the `--input_path` equal to the `reduced.lang` file, and the `--key` set to `#coronavirus`.
 
-Create a new file `alternative_reduce.py`.
-This file should take as input on the command line a list of hashtags,
-and output a line plot where:
-1. There is one line per input hashtag.
-1. The x-axis is the day of the year.
-1. The y-axis is the number of tweets that use that hashtag during the year.
+<img src=reduced.lang_%23coronavirus_graph.png width=100% />
 
-Your `alternative_reduce.py` file have to follow a similar structure to a combined version of the `reduce.py` and `visualize.py` files.
-First, you will scan through all of the data in the `outputs` folder created by the mapping step.
-In this scan, you will construct a dataset that contains the information that you need to plot.
-Then, after you have extracted this information,
-you should call the appropriate matplotlib functions to plot the data.
+Here we see that most of the tweets posted in 2020 that contained `#coronavirus` were written in English, which is hardly surprising considering the Country plot above.
 
-> **HINT:**
-> The specifications for this program and plot are intentionally underspecified
-> (similar to how many real-world problems are underspecified).
-> Feel free to ask clarifying questions.
+Next, I wanted to experiment a bit with multilingual text, and see how the results would change for both plots. First, using `visualize.py`, I created a plot that looked for tweets sent with the hashtag `#코로나바이러스` at the country level. Note that `#코로나바이러스` is Korean for Coronavirus.
 
-**Task 5: Uploading**
+| Top 10 #코로나바이러스 Tweets by Country |
+|-------|
+| <img src="reduced.country_korean_graph.png" width=1000 /> |
 
-Commit all of your code and images output files to your github repo and push the results to github.
-You must:
-1. Delete the current contents of the `README.md` file
-1. Insert into the `README.md` file a brief explanation of your project, including the 4 generated png files.
-    This explanation should be suitable for a future employer to look at while they are interviewing you to get a rough idea of what you accomplished.
-    (And you should tell them about this in your interviews!)
+The results are as we should expect here -- the vast majority of tweets in 2020 with the hashtag `#코로나바이러스` were from Korea. We see a similar result in the plot that looks for tweets sent with the hashtag `#코로나바이러스` at the language level, below:
 
-## Submission
+| Top 10 #코로나바이러스 Tweets by Language |
+|-------|
+| <img src="reduced.lang_korean_graph.png" width=1000 /> |
 
-Upload a link to you github repository on sakai.
-I will look at your code and visualization to determine your grade.
+Of course almost all the tweets in 2020 with the hashtag `#코로나바이러스` were written in Korean, beacause, well... `#코로나바이러스` is Korean!
 
-**Grading:**
+If anything, the last two plots above serve as a clear indication that our `map.py` and `reduce.py` files are working properly :)
 
-The assignment is worth 32 points:
+**Alternative Reduce**
 
-1. 8 points for getting the map/reduce to work
-1. 8 points for your repo/readme file
-1. 8 points for Task 3 plots
-1. 8 points for Task 4 plots
+Recall that the main goal of this project is to monitor for the spread of the coronavirus on social media. While the above plots are interesting, they haven't helped us achieve this goal. Really, what we want is a way to visualize the speed at which the pandemic emerged, and immediately changed the world. We can do this by searching for tweets with given hashtags across time, and keeping track of the number of hashtag matches every day in 2020.
 
-The most common ways to miss points are:
-1. having incorrect data plotted (because the map program didn't finish running on all of the inputs)
-1. having illegible plots that are not "reasonably" formatted
+The `alternative_reduce.py` file takes as input a list of hashtags, and outputs a line plot where:
 
-Notice that we are not using CI to grade this assignment.
-There's two reasons:
+- there is one line per input hashtag
+- the x-axis is the day of the year
+- the y-axis is the number of tweets that use that hashtag during the year
 
-1. You can get slightly different numbers depending on some of the design choices you make in your code.
-    For example, should the term `corona` count tweets that contain `coronavirus` as well as tweets that contain just `corona`?
-    These are relatively insignificant decisions.
-    I'm more concerned with your ability to write a shell script and use `nohup`, `&`, and other process control tools effectively.
+Essentially, `alternative_reduce.py` is a combined version of the `reduce.py` and `visualize.py` files. First, we scan through all of the data in the `outputs` folder created by the mapping step, construct a new dataset that contains the information we want to plot. Then, after extracting this information, we simply create a plot of the data.
 
-1. The dataset is too large to upload to github actions.
-    In general, writing test cases for large data analysis tasks is tricky and rarely done.
-    Writing correct code without test cases is hard,
-    and so many (most?) analysis of large datasets contain lots of bugs.
+First, I wanted to visualize the spread of coronavirus. So, I called `alternative_reduce.py` and inputted the following hashtags: `#coronavirus`, `#corona`, and `#covid19`. Of course, there are many more hashtags that could be used to talk about coronavirus, but using these three provided a satisfactory result:
+
+<img src=lineplot_by_hashtag.png width=100% />
+
+This plot is really cool. Thinking back to March of 2020, coronavirus was a really new, scary thing that everyone was talking about. This plot shows just that.
+
+Next, I was curious if tracking other hashtags that are a bit more loosely related to the coranavirus itself could also provide insights into the spread of the coronavirus. Would hashtags like `#doctor`, `#nurse`, `#flu`, and others also show the speed at which the pandemic took over in March of 2020? Or would we also see normal year-to-year spikes of people talking about health related things (for example, in flu season)? Take a look:
+
+<img src=lineplot_by_hashtag_v2.png width=100% />
+
+While this plot looks cool, I don't think it really tells us much. We do see some drastic spikes at various points, but these look like single day outliers. Maybe we could say that the magnitude of these spikes is generally greater in the earlier months of 2020 (which is probably true), but I think it would be a bit of a stretch to make any claims from that. The lines kind of just looks messy throughout. Well, it was worth a try!
+
+## Conclusion
+
+
