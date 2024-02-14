@@ -159,4 +159,12 @@ While this plot looks cool, I don't think it really tells us much. We do see som
 
 ## Conclusion
 
+In this project, I utilized the MapReduce model to scan through 1.1 billion tweets sent in 2020, with the goal of monitoring for the spread of the coronavirus on social media. I generated a few plots to visualize the data that I gathered, and drew some valuable insights.
 
+The first four graphs didn't reveal anything surprising. Essentially, `#coronavirus` was mainly included in English tweets from English-speaking countries. The Korean translation of coronavirus, `#코로나바이러스`, was used at a lower rate and almost exclusively in Korean tweets sent from Korea. The main benefit of these graphs was that they allowed me to verify that my Mapping and Reducing steps were generating valid outputs.
+
+The most interesting findings were shown in the last two line plots. Mainly, in the first plot we can see the speed as to which the coronavirus spread, and captured people's attention. We see a small spike in coronavirus-related hashtag usage in late Feburary, followed by a massive spike in keyword hits during the first few weeks of March. This pretty accurately reflects how the actual pandemic developed -- first with some talk of the initial reported cases in China, followed by the first cases in the US, country-wide lockdowns, and wide-spread panic. 
+
+Additionally, we also see that the number of tweets that mentioned coronavirus does not allign with the number of daily cases in the US and abroad. After the initial drastic spike in March, the number of tweets that used the hashtags we searched for remained relatively low. Even though the pandemic generally worsened after March of 2020, I presume this is due to people focusing their attention away from covid as it became more "normal."
+
+These are just a few of the insights that could be drawn from the analysis above. In future work, I think it would be interesting to track the spread of coronavirus in different locations across time, and compare the volume of those tweets to the actual coronavirus case numbers in those locations.
