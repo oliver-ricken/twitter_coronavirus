@@ -77,11 +77,13 @@ hashtags = [
 ]
 ```
 
-Running `map.py` will output two files, one that ends in `.lang` for the language dictionary, and one that ends in `.country` for the country dictionary. Essentially, each file either contains the number of tweets sent from each country (in the `.country` file), or the number of tweets written in each language (in the `.lang` file). The keys of the dictionary in each file are simply the hashtags that we want to track, and the value of those keys are the number of sent tweets that contain the respective hashtag.
+Running `map.py` will output two files, one that ends in `.lang` for the language dictionary, and one that ends in `.country` for the country dictionary. Essentially, each file either contains the number of tweets sent from each country (in the `.country` file), or the number of tweets written in each language (in the `.lang` file). The keys of the dictionary in each file are simply the hashtags that we want to track, and the value of those keys are the number of posted tweets that contain the respective hashtag.
 
 **Running the Mapper**
 
-`run_maps.sh` is a shell script that loops over each file in the dataset and runs the `map.py` command on that file. Each call to `map.py` can take up to a day to finish, so I used the `nohup` command to ensure that the program continues to run after disconnecting, and the `&` operator to ensure that all `map.py` commands run in parallel. First, ensure that you have execute permissions:
+`run_maps.sh` is a shell script that loops over each file in the dataset and runs the `map.py` command on that file. Each call to `map.py` can take up to a day to finish, so I used the `nohup` command to ensure that the program continues to run after disconnecting, and the `&` operator to ensure that all `map.py` commands run in parallel. 
+
+First, ensure that you have execute permissions:
 
 ```
 chmod u+x run_maps.sh
@@ -95,7 +97,7 @@ nohup ./run_maps.sh &
 
 **Reducing the Outputs**
 
-After `map.py` has run on all the files, a large number of files will be contained in the `outputs` folder. `reduce.py` combines all of the `.lang` files into a single file, `reduced.lang`, and all of the `.country` files into a different file, `reduced.country`. We make two calls to `reduce.py`, one for the `.lang` files and the other for the `.country` files. Here's an example command to run `reduce.py` for the `.lang` files, using the glob operator:
+After `map.py` has run on all the files, a large number of files will be contained in the `outputs` folder. `reduce.py` combines all of the `.lang` files into a single file, `reduced.lang`, and all of the `.country` files into a different file, `reduced.country`. We make two calls to `reduce.py` to achieve this. Here's an example command to run `reduce.py` for the `.lang` files, using the glob operator:
 
 ```
 ./src/reduce.py --input_path=outputs/*.lang --output_path=reduced.lang
@@ -107,7 +109,7 @@ A similar command should be used to input all the `.country` files into `reduce.
 
 The `visualize.py` file generates a bar graph of the results and stores the bar graph as a png file. The horizontal axis of the graph contains the keys of the input file, and the vertical axis of the graph contains the values of the input file.
 
-First, I ran `visualize.py` with the `--input_path` equal to the country file created in the reduce phase, and the `--key` set to `#coronavirus`. This gave me an idea of which countries sent the most tweets that in some way mentioned the coronavirus. Of course, the results are slightly skewed due to differences in population between the countries, but the result is still somewhat interesting.
+First, I ran `visualize.py` with the `--input_path` equal to the country file created in the reduce phase, and the `--key` set to `#coronavirus`. This gave me an idea of which countries sent the most tweets that mentioned the coronavirus. Of course, the results are slightly skewed due to differences in population between the countries, but the result is still somewhat interesting.
 
 <img src=reduced.country_%23coronavirus_graph.png width=100% />
 
@@ -115,9 +117,9 @@ We can see here that the vast majority of tweets posted in 2020 that contained `
 
 <img src=reduced.lang_%23coronavirus_graph.png width=100% />
 
-Here we see that most of the tweets posted in 2020 that contained `#coronavirus` were written in English, which is hardly surprising considering the Country plot above.
+Here we see that most of the tweets posted in 2020 that contained `#coronavirus` were written in English, which is hardly surprising considering the country plot above.
 
-Next, I wanted to experiment a bit with multilingual text, and see how the results would change for both plots. First, using `visualize.py`, I created a plot that looked for tweets sent with the hashtag `#코로나바이러스` at the country level. Note that `#코로나바이러스` is Korean for Coronavirus.
+Next, I wanted to experiment a bit with multilingual text, and see how the results would change for both plots. First, using `visualize.py`, I created a plot that looked for tweets sent with the hashtag `#코로나바이러스` at the country level. Note that `#코로나바이러스` is Korean for coronavirus.
 
 | Top 10 #코로나바이러스 Tweets by Country |
 |-------|
@@ -135,7 +137,7 @@ If anything, the last two plots above serve as a clear indication that our `map.
 
 **Alternative Reduce**
 
-Recall that the main goal of this project is to monitor for the spread of the coronavirus on social media. While the above plots are interesting, they haven't helped us achieve this goal. Really, what we want is a way to visualize the speed at which the pandemic emerged, and immediately changed the world. We can do this by searching for tweets with given hashtags across time, and keeping track of the number of hashtag matches every day in 2020.
+Recall that the main goal of this project is to monitor for the spread of the coronavirus on social media. While the above plots are interesting, they haven't helped us achieve this goal. Really, what we want is a way to visualize the speed at which the pandemic emerged, and global perceptions of the pandemic over the course of the year. We can do this by searching for tweets with given hashtags across time, and keeping track of the number of hashtag matches every day in 2020.
 
 The `alternative_reduce.py` file takes as input a list of hashtags, and outputs a line plot where:
 
@@ -143,28 +145,28 @@ The `alternative_reduce.py` file takes as input a list of hashtags, and outputs 
 - the x-axis is the day of the year
 - the y-axis is the number of tweets that use that hashtag during the year
 
-Essentially, `alternative_reduce.py` is a combined version of the `reduce.py` and `visualize.py` files. First, we scan through all of the data in the `outputs` folder created by the mapping step, construct a new dataset that contains the information we want to plot. Then, after extracting this information, we simply create a plot of the data.
+Essentially, `alternative_reduce.py` is a combined version of the `reduce.py` and `visualize.py` files. First, we scan through all of the data in the `outputs` folder created by the mapping step, and construct a new dataset that contains the information we want to plot. Then, after extracting this information, we simply create a plot of the data.
 
-First, I wanted to visualize the spread of coronavirus. So, I called `alternative_reduce.py` and inputted the following hashtags: `#coronavirus`, `#corona`, and `#covid19`. Of course, there are many more hashtags that could be used to talk about coronavirus, but using these three provided a satisfactory result:
+First, I specifically wanted to visualize the spread of coronavirus. So, I called `alternative_reduce.py` and inputted the following hashtags: `#coronavirus`, `#corona`, and `#covid19`. Of course, there are many more hashtags that could be used to talk about coronavirus, but using these three provided a satisfactory result:
 
 <img src=lineplot_by_hashtag.png width=100% />
 
 This plot is really cool. Thinking back to March of 2020, coronavirus was a really new, scary thing that everyone was talking about. This plot shows just that.
 
-Next, I was curious if tracking other hashtags that are a bit more loosely related to the coranavirus itself could also provide insights into the spread of the coronavirus. Would hashtags like `#doctor`, `#nurse`, `#flu`, and others also show the speed at which the pandemic took over in March of 2020? Or would we also see normal year-to-year spikes of people talking about health related things (for example, in flu season)? Take a look:
+Next, I was curious if tracking other hashtags that are a bit more loosely related to the coranavirus itself could also provide insights into the spread of covid. Would hashtags like `#doctor`, `#nurse`, `#flu`, and others also show the speed at which the pandemic took over in March of 2020? Or would we also see normal year-to-year spikes of people talking about health related things (for example, in flu season)? Take a look:
 
 <img src=lineplot_by_hashtag_v2.png width=100% />
 
-While this plot looks cool, I don't think it really tells us much. We do see some drastic spikes at various points, but these look like single day outliers. Maybe we could say that the magnitude of these spikes is generally greater in the earlier months of 2020 (which is probably true), but I think it would be a bit of a stretch to make any claims from that. The lines kind of just looks messy throughout. Well, it was worth a try!
+While this plot looks cool, I don't think it really tells us much. We do see some drastic spikes at various points, but these look like single day outliers. Maybe we could say that the magnitude of these spikes is generally greater in the earlier months of 2020 (which is probably true), but I think it would be a bit of a stretch to try and make any firm claims from that. The data just looks messy throughout. Well, it was worth a try!
 
 ## Conclusion
 
 In this project, I utilized the MapReduce model to scan through 1.1 billion tweets sent in 2020, with the goal of monitoring for the spread of the coronavirus on social media. I generated a few plots to visualize the data that I gathered, and drew some valuable insights.
 
-The first four graphs didn't reveal anything surprising. Essentially, `#coronavirus` was mainly included in English tweets from English-speaking countries. The Korean translation of coronavirus, `#코로나바이러스`, was used at a lower rate and almost exclusively in Korean tweets sent from Korea. The main benefit of these graphs was that they allowed me to verify that my Mapping and Reducing steps were generating valid outputs.
+The first four graphs didn't reveal anything surprising. Essentially, `#coronavirus` was mainly included in English tweets from English-speaking countries. The Korean translation of coronavirus, `#코로나바이러스`, was used at a lower rate and almost exclusively in Korean tweets sent from Korea. The main benefit of these graphs was that they allowed me to verify that my Map and Reduce steps were generating valid outputs.
 
-The most interesting findings were shown in the last two line plots. Mainly, in the first plot we can see the speed as to which the coronavirus spread, and captured people's attention. We see a small spike in coronavirus-related hashtag usage in late Feburary, followed by a massive spike in keyword hits during the first few weeks of March. This pretty accurately reflects how the actual pandemic developed -- first with some talk of the initial reported cases in China, followed by the first cases in the US, country-wide lockdowns, and wide-spread panic. 
+The most interesting findings are contained within in the last two line plots. Mainly, in the first plot we can see the speed at which the coronavirus spread, and captured people's attention. We see a small spike in coronavirus-related hashtag usage in late Feburary, followed by a massive spike in keyword hits during the first few weeks of March. This accurately reflects how the pandemic actually developed -- first with some talk of the initial reported cases in China, followed by the first cases in the US, country-wide lockdowns, and wide-spread panic. 
 
-Additionally, we also see that the number of tweets that mentioned coronavirus does not allign with the number of daily cases in the US and abroad. After the initial drastic spike in March, the number of tweets that used the hashtags we searched for remained relatively low. Even though the pandemic generally worsened after March of 2020, I presume this is due to people focusing their attention away from covid as it became more "normal."
+Additionally, we also see that the number of tweets that mentioned coronavirus does not allign with the number of daily cases in the US and abroad. After the initial spike in March, the number of tweets that mentioned coronavirus remained relatively low. Even though the pandemic generally worsened after March of 2020, I presume this is due to people focusing their attention away from covid as it became more "normal."
 
 These are just a few of the insights that could be drawn from the analysis above. In future work, I think it would be interesting to track the spread of coronavirus in different locations across time, and compare the volume of those tweets to the actual coronavirus case numbers in those locations.
