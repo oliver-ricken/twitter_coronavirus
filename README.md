@@ -19,7 +19,7 @@ The tweets for each day in 2020 are stored in zip files with the following name 
 Let's say we wanted to simply count the number of tweets sent on a particular day. We could use the following command:
 
 ```
-unzip -p '/data/Twitter dataset/geoTwitter20-01-01.zip' | wc -l
+$ unzip -p '/data/Twitter dataset/geoTwitter20-01-01.zip' | wc -l
 ```
 
 However, the file is so large that looping over it and counting the number of lines takes a very long time -- about 80 seconds on average for me. So, how long would it take for us to loop over the entire dataset?
@@ -86,13 +86,13 @@ Running `map.py` will output two files, one that ends in `.lang` for the languag
 First, ensure that you have execute permissions:
 
 ```
-chmod u+x run_maps.sh
+$ chmod u+x run_maps.sh
 ```
 
 Then, go ahead and run the script:
 
 ```
-nohup ./run_maps.sh &
+$ nohup ./run_maps.sh &
 ```
 
 **Reducing the Outputs**
@@ -100,7 +100,7 @@ nohup ./run_maps.sh &
 After `map.py` has run on all the files, a large number of files will be contained in the `outputs` folder. `reduce.py` combines all of the `.lang` files into a single file, `reduced.lang`, and all of the `.country` files into a different file, `reduced.country`. We make two calls to `reduce.py` to achieve this. Here's an example command to run `reduce.py` for the `.lang` files, using the glob operator:
 
 ```
-./src/reduce.py --input_path=outputs/*.lang --output_path=reduced.lang
+$ ./src/reduce.py --input_path=outputs/*.lang --output_path=reduced.lang
 ```
 
 A similar command should be used to input all the `.country` files into `reduce.py` to generate `reduced.country`.
